@@ -84,7 +84,8 @@ public class AccountController {
 			case DELETE_ACCOUNT:
 				account = new AccountBean();
 				account.setUid(JOptionPane.showInputDialog("아이디"));
-				account.setPass(JOptionPane.showInputDialog("패스워드"));
+				account.setPass(JOptionPane.showInputDialog("패스워드")
+						+"/"+JOptionPane.showInputDialog("패스워드 확인"));
 				service.deleteAccount(account);
 				break;
 			default:
