@@ -1,70 +1,70 @@
 package serviceImpl;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import domain.*;
-import service.MemberService;
+import service.*;
 public class MemberServiceImpl implements MemberService {
-	List<MemberBean> list;
+	Map<String,MemberBean> map;
 
 	public MemberServiceImpl() {
-		list = new ArrayList<MemberBean>();
+		map = new HashMap<>();
 	}
 	@Override
 	public void createUser(UserBean user) {
 		user.setCreditRating("7등급");
-		/*boolean flag = list.add(user);*/
-		/*if(list.add(user)) {
-			res ="등록성공";
-		} else {
-			res ="등록실패";
-		}*/
-		System.out.println("실행결과 : "+ ((list.add(user))?"등록성공":"등록실패"));
+		map.put(user.getUid(), user);
 	}
 
 	@Override
 	public void createStaff(StaffBean staff) {
 		staff.setAccessNum("123");
-		System.out.println("실행결과 : "+ ((list.add(staff))?"등록성공":"등록실패"));
+		map.put(staff.getUid(), staff);
 	}
 
 	@Override
-	public List<MemberBean> list() {
-		return list;
+	public Map<String, MemberBean> map() {
+		return map;
 	}
 
 	@Override
-	public List<MemberBean> search(String param) {
+	public List<MemberBean> findByName(String name) {
 		List<MemberBean> temp = new ArrayList<>();
-		for(int i=0;i<list.size();i++) {
-			if(param.equals(list.get(i).getName())) {
-				temp.add(list.get(i));
+		Set<MemberBean> set = new HashSet<>();
+		for(Map.Entry<String,MemberBean> e: map.entrySet()) {
+			if(name.equals(e.getValue().getName())) {
+				set.add(e.getValue());
 			}
+		}
+		Iterator<MemberBean> it = set.iterator();
+		while(it.hasNext()) {
+			temp.add(it.next());
 		}
 		return temp;
 	}
 
 	@Override
-	public MemberBean search(MemberBean member) {
-		MemberBean dap = new MemberBean();
-		for(int i=0;i<list.size();i++) {
-			if(member.getUid().equals(list.get(i).getUid())) {
-				dap=list.get(i);
-				break;
+	public MemberBean findById(MemberBean member) {
+		System.out.println("찾는 아이디"+map.get(member.getUid()));
+		return map.get(member.getUid());
+	}
+
+	@Override
+	public void updatePassword(MemberBean member) {
+		String id = member.getUid();
+		String oldPass =member.getPass().split("/")[0];
+		String newPass =member.getPass().split("/")[1];
+		MemberBean mem = map.get(member.getUid());
+		if(mem==null) {
+			System.out.println("수정하려는  ID 없음!");
+		}else {
+			if(oldPass.equals(map.get(id).getPass())){
+				mem.setPass(newPass);
+				map.put(id, mem);
 			}
 		}
-		return dap;
 	}
 
 	@Override
-	public void update(MemberBean member) {
-		list.get(list.indexOf(search(member))).setPass(member.getPass());
+	public void deleteMember(MemberBean member) {
+		map.remove(member.getUid());
 	}
-
-	@Override
-	public void delete(MemberBean member) {
-		list.remove(list.indexOf(search(member)));
-		//list.remove(search(member)); 위와 동일
-		
-	}
-
 }

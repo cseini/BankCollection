@@ -57,7 +57,7 @@ public class AccountController {
 				service.createMinusAccount((MinusAccountBean) account);
 				break;
 			case LIST:
-				JOptionPane.showMessageDialog(null, service.list());
+				JOptionPane.showMessageDialog(null, service.map());
 				break;
 			/*case DEPOSIT:
 				break;

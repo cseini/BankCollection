@@ -1,42 +1,39 @@
 package serviceImpl;
-import java.util.List;
-import java.util.ArrayList;
+import java.util.*;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import domain.*;
 import service.AccountService;
 public class AccountServiceImpl implements AccountService {
-	List<AccountBean> list;
+	Map<String, AccountBean> map;
 	public AccountServiceImpl() {
-		list = new ArrayList<>();
+		map = new HashMap<>();
 	}
 	@Override
 	public void createAccount(AccountBean account) {
 		account.setAccountType();
-		account.setAccountNum(createAccountNum(randomNum()));
+		account.setAccountNum(createAccountNum());
 		account.setCreateDate(createDate());
-		list.add(account);
+		map.put(account.getUid(),account);
 	}
 
 	@Override
 	public void createMinusAccount(MinusAccountBean account) {
 		account.setAccountType();
-		account.setAccountNum(createAccountNum(randomNum()));
+		account.setAccountNum(createAccountNum());
 		account.setCreateDate(createDate());
-		list.add(account);
+		map.put(account.getUid(), account);
 	}
 
 	@Override
-	public List<AccountBean> list() {
-		return list;
+	public Map<String, AccountBean> map() {
+		return map;
 	}
 
 	@Override
-	public String createAccountNum(String random) {
+	public String createAccountNum() {
 		String accountNum= "";
 		for(int i=0;i<3;i++) {
-			randomNum();
-			accountNum+=(i!=2)?random+("-"):random;
+			accountNum+=(i!=2)?randomNum()+("-"):randomNum();
 		}
 		return accountNum;
 	}
@@ -47,57 +44,46 @@ public class AccountServiceImpl implements AccountService {
 	
 	@Override
 	public List<AccountBean> findByName(String name) {
-		List<AccountBean> res = new ArrayList<>();
-		for(int i=0;i<list.size();i++) {
-			if(name.equals(list.get(i).getName())) {
-				res.add(list.get(i));
+		List<AccountBean> temp = new ArrayList<>();
+		Set<AccountBean> set = new HashSet<>();
+		for(Map.Entry<String, AccountBean> e : map.entrySet()) {
+			if(name.equals(e.getValue().getName())) {
+				set.add(e.getValue());
 			}
 		}
-		return res;
+		Iterator<AccountBean> it = set.iterator();
+		while(it.hasNext()) {
+			temp.add(it.next());
+		}
+		return temp;
 	}
 
 	@Override
 	public AccountBean findById(AccountBean account) {
-		AccountBean res = new AccountBean();
-		for(int i=0;i<list.size();i++) {
-			if(account.getUid().equals(list.get(i).getUid())
-					&&
-					account.getPass().equals(list.get(i).getPass())) {
-				res=list.get(i);
-				break;
-			}
-		}
-		return res;
+		return map.get(account.getUid());
 	}
 
 	@Override
 	public void chagePassword(AccountBean account) {
-		String pass = account.getPass().split("/")[0];
+		String id = account.getUid();
+		String oldPass = account.getPass().split("/")[0];
 		String newPass = account.getPass().split("/")[1];
-		account.setPass(pass);
-		if(account.getUid().equals(list.get(list.indexOf(findById(account))).getUid())
-				&&
-			account.getPass().equals(list.get(list.indexOf(findById(account))).getPass())) {
-			list.get(list.indexOf(findById(account))).setPass(newPass);
+		AccountBean acc = map.get(account.getUid());
+		if(acc==null) {
+			System.out.println("수정하려는 아이디 없음");
+		} else {
+			if(oldPass.equals(map.get(acc.getUid()).getPass()));
+			acc.setPass(newPass);
+			map.put(id, acc);
 		}
 	}
 
 	@Override
 	public void deleteAccount(AccountBean account) {
-		String pass = account.getPass().split("/")[0];
-		String rePass = account.getPass().split("/")[1];
-		account.setPass(pass);
-		if(account.getUid().equals(list.get(list.indexOf(findById(account))).getUid())
-				&&
-			account.getPass().equals(list.get(list.indexOf(findById(account))).getPass())
-			&&
-			rePass.equals(list.get(list.indexOf(findById(account))).getPass())) {
-			list.remove(list.indexOf(findById(account)));
-		}
+		map.remove(findById(account).getUid());
 	}
 	@Override
 	public String createDate() {
 		return new SimpleDateFormat("yyyy년 MM월 dd일").format(new Date());
 	}
-
 }

@@ -35,26 +35,51 @@ public class MemberController {
 				return;
 			case JOIN:
 				member = new UserBean();
-				member.setUid(JOptionPane.showInputDialog("이름"));
+				member.setName(JOptionPane.showInputDialog("이름"));
+				member.setUid(JOptionPane.showInputDialog("아이디"));
+				member.setPass(JOptionPane.showInputDialog("비밀번호"));
+				member.setSsn(JOptionPane.showInputDialog("주민번호"));
+				member.setAddr(JOptionPane.showInputDialog("주소"));
+				member.setPhone(JOptionPane.showInputDialog("전화번호"));
+				member.setEmail(JOptionPane.showInputDialog("이메일"));
 				service.createUser((UserBean) member);
 				break;
 			case ADD:
 				member = new StaffBean();
-				member.setUid(JOptionPane.showInputDialog("이름"));
+				member.setName(JOptionPane.showInputDialog("이름"));
+				member.setUid(JOptionPane.showInputDialog("아이디"));
+				member.setPass(JOptionPane.showInputDialog("비밀번호"));
+				member.setSsn(JOptionPane.showInputDialog("주민번호"));
+				member.setAddr(JOptionPane.showInputDialog("주소"));
+				member.setPhone(JOptionPane.showInputDialog("전화번호"));
+				member.setEmail(JOptionPane.showInputDialog("이메일"));
 				service.createStaff((StaffBean) member);
 				break;
 			case COUNT:
 				break;
 			case LIST:
-				JOptionPane.showMessageDialog(null,service.list());
+				JOptionPane.showMessageDialog(null,service.map());
 				break;
 			case FIND_BY_ID:
+				member = new MemberBean();
+				member.setUid(JOptionPane.showInputDialog("아이디"));
+				member.setPass(JOptionPane.showInputDialog("비밀번호"));
+				JOptionPane.showMessageDialog(null,service.findById(member));
 				break;
 			case FIND_BY_NAME:
+				JOptionPane.showMessageDialog(null,service.findByName(JOptionPane.showInputDialog("이름")));
 				break;
 			case UPDATE:
+				member = new MemberBean();
+				member.setUid(JOptionPane.showInputDialog("아이디"));
+				member.setPass(JOptionPane.showInputDialog("비밀번호"));
+				service.updatePassword(member);
 				break;
 			case WITHDRAWAL:
+				member = new MemberBean();
+				member.setUid(JOptionPane.showInputDialog("아이디"));
+				member.setPass(JOptionPane.showInputDialog("비밀번호"));
+				service.deleteMember(member);
 				break;
 			default:
 				break;

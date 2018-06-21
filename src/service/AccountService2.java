@@ -1,12 +1,11 @@
 package service;
 import domain.*;
-import java.util.Map;
 import java.util.List;
-public interface AccountService {
+public interface AccountService2 {
 	public void createAccount(AccountBean account);
 	public void createMinusAccount(MinusAccountBean account);
-	public Map<String,AccountBean> map();
-	public String createAccountNum();
+	public List<AccountBean> list();
+	public String createAccountNum(String random);
 	public String randomNum();
 	public String createDate();
 	public List<AccountBean> findByName(String name);
